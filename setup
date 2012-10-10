@@ -54,7 +54,6 @@ write_config() {
     args=$(java_args)
     resolved_args=$(eval "echo $args")
     escaped_resolved_args=$(escape_quotes "$resolved_args")
-    echo "control=$app_dir/.genapp/control" >> $config
     echo "working=$app_dir/app" >> $config
     echo "port=$app_port" >> $config
     echo "java=$java" >> $config
