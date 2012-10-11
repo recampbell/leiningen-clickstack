@@ -5,7 +5,7 @@ set -e
 
 find_java() {
     set +u
-    java_version=${java_java_version-"1.6"}
+    java_version=${sbt_java_version-"1.6"}
     set -u
     case "$java_version" in
         "1.6") echo "/opt/java6/bin/java";;
@@ -34,6 +34,7 @@ create_app_skel() {
     chmod 770 $app_dir
     mkdir -m 770 $app_dir/tmp
     mkdir -m 770 $app_dir/log
+    mkdir -m 770 $app_dir/lib
     ln -s $log_dir/current $app_dir/log/current
 }
 
@@ -41,9 +42,9 @@ escape_quotes() {
     echo $1 | sed 's/"/\\"/g'
 }
 
-java_args() {
+sbt_args() {
     set +u
-    escaped=$(escape_quotes "$java_args")
+    escaped=$(escape_quotes "$sbt_args")
     set -u
     echo "\"$escaped\""
 }
@@ -51,33 +52,34 @@ java_args() {
 write_config() {
     config="$control_dir/config"
     echo "Writing configuration to $config"
-    args=$(java_args)
+    args=$(sbt_args)
     resolved_args=$(eval "echo $args")
     escaped_resolved_args=$(escape_quotes "$resolved_args")
     echo "working=$app_dir/app" >> $config
     echo "port=$app_port" >> $config
     echo "java=$java" >> $config
     echo "tmp_dir=$app_dir/tmp" >> $config
+    echo "lib_dir=$app_dir/lib" >> $config
     echo "args=\"$escaped_resolved_args\"" >> $config
 }
 
-java_opts() {
+sbt_opts() {
     set +u
-    escaped=$(escape_quotes "$java_opts")
+    escaped=$(escape_quotes "$sbt_opts")
     set -u
     echo "\"$escaped\""
 }
 
 write_core_opts() {
-    config="$control_dir/java-opts-10-core"
-    echo "Writing java options to $config"
-    opts=$(java_opts)
+    config="$control_dir/sbt-opts-10-core"
+    echo "Writing sbt options to $config"
+    opts=$(sbt_opts)
     resolved_opts=$(eval "echo $opts")
     echo "$resolved_opts" > $config
 }
 
 write_env_opts() {
-    config="$control_dir/java-opts-15-env"
+    config="$control_dir/sbt-opts-15-env"
     echo "Writing env to $config"
     for env_name in `env | grep '^env_' | cut -d= -f1`; do
         echo_val="echo \$$env_name";
@@ -91,7 +93,7 @@ write_env_opts() {
 write_control() {
     echo "Writing control scripts to $control_dir"
     install -m 550 $plugin_dir/control/start $control_dir
-    install -m 550 $plugin_dir/control/sbt-launch.jar $control_dir
+    install -m 550 $plugin_dir/lib/sbt-launch.jar $app_dir/lib/
 }
 
 create_app_skel
