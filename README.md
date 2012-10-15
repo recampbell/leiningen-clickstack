@@ -17,8 +17,4 @@ You're almost done! Just specify the arguments you'd like for SBT, for example, 
     zip ../MYAPP.zip .
     bees app:deploy -Rargs="clean compile run" -t sbt -a APP_NAME ../MYAPP.zip
 
-Or, for example for a test play 2 server, change the last command to:
-
-    bees app:deploy -Rargs="\"start \$app_port\"" -t sbt -a APP_NAME ../MYAPP.zip
-
 And your app is now running on the cloud!
