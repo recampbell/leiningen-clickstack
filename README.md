@@ -12,7 +12,6 @@ Here, we simply create a new application on CloudBees.
 ## Deploying your Scala application to the cloud!
 
 You're almost done! Just specify the arguments you'd like for SBT, for example, with clean compile run, in your project directory package and deploy with:
-(Note that the command will not yet be working, it's just an indication of how it will be done in the near future).
 
     zip ../MYAPP.zip .
     bees app:deploy -Rargs="clean compile run" -t sbt -a APP_NAME ../MYAPP.zip
