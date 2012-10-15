@@ -5,7 +5,6 @@ set -u
 control_dir="$(dirname $0)"
 . $control_dir/config
 
-
 cmd="$java -jar $lib_dir/sbt-launch.jar -Djava.io.tmpdir=\"$tmp_dir\" -Dhttp.port=$port -Dapp.port=$port"
 for file in `ls $control_dir/sbt-opts-* | sort`; do
     cmd="$cmd `cat $file`"
