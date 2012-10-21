@@ -5,8 +5,12 @@ set -u
 control_dir="$(dirname $0)"
 . $control_dir/config
 
-cmd="$java -jar $lib_dir/sbt-launch.jar -Dsbt.log.noformat=true -Djava.io.tmpdir=\"$tmp_dir\" -Dhttp.port=$port -Dapp.port=$port"
-for file in `ls $control_dir/sbt-opts-* | sort`; do
+export LEIN_JAVA_CMD=$java
+export LEIN_JVM_OPTS="-Djava.io.tmpdir=\"$tmp_dir\""
+export PORT="$port"
+
+cmd="LEIN_JAVA_CMD= $lib_dir/lein"
+for file in `ls $control_dir/lein-opts-* | sort`; do
     cmd="$cmd `cat $file`"
 done
 cmd="$cmd $args"

@@ -5,7 +5,7 @@ set -e
 
 find_java() {
     set +u
-    java_version=${sbt_java_version-"1.6"}
+    java_version=${lein_java_version-"1.6"}
     set -u
     case "$java_version" in
         "1.6") echo "/opt/java6/bin/java";;
@@ -42,9 +42,9 @@ escape_quotes() {
     echo $1 | sed 's/"/\\"/g'
 }
 
-sbt_args() {
+lein_args() {
     set +u
-    escaped=$(escape_quotes "$sbt_args")
+    escaped=$(escape_quotes "$lein_args")
     set -u
     echo "\"$escaped\""
 }
@@ -52,7 +52,7 @@ sbt_args() {
 write_config() {
     config="$control_dir/config"
     echo "Writing configuration to $config"
-    args=$(sbt_args)
+    args=$(lein_args)
     resolved_args=$(eval "echo $args")
     escaped_resolved_args=$(escape_quotes "$resolved_args")
     echo "working=$app_dir/app" >> $config
@@ -63,23 +63,23 @@ write_config() {
     echo "args=\"$escaped_resolved_args\"" >> $config
 }
 
-sbt_opts() {
+lein_opts() {
     set +u
-    escaped=$(escape_quotes "$sbt_opts")
+    escaped=$(escape_quotes "$lein_opts")
     set -u
     echo "\"$escaped\""
 }
 
 write_core_opts() {
-    config="$control_dir/sbt-opts-10-core"
-    echo "Writing sbt options to $config"
-    opts=$(sbt_opts)
+    config="$control_dir/lein-opts-10-core"
+    echo "Writing lein options to $config"
+    opts=$(lein_opts)
     resolved_opts=$(eval "echo $opts")
     echo "$resolved_opts" > $config
 }
 
 write_env_opts() {
-    config="$control_dir/sbt-opts-15-env"
+    config="$control_dir/lein-opts-15-env"
     echo "Writing env to $config"
     for env_name in `env | grep '^env_' | cut -d= -f1`; do
         echo_val="echo \$$env_name";
@@ -93,7 +93,7 @@ write_env_opts() {
 write_control() {
     echo "Writing control scripts to $control_dir"
     install -m 550 $plugin_dir/control/start $control_dir
-    install -m 550 $plugin_dir/lib/sbt-launch.jar $app_dir/lib/
+    install -m 550 $plugin_dir/lib/lein $app_dir/lib/
 }
 
 create_app_skel
